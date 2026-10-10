@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+club-kdl = "0.14.0"
+jiff = "0.2.38"
+thiserror = "2.0.21"
 
 
 [lints.clippy]

@@ -1,0 +1,9 @@
+capture "I am a capture header"
+
+capture "This capture is sleeping" {
+	sleeping until="2026-10-21"
+}
+
+capture "I needed more space" {
+	body "to elaborate on my ideas regarding this capture"
+}
