@@ -1,0 +1,6 @@
+- read and write kdl files
+  - define each type of node
+  - read documents
+  - write documents
+  - tray-tools format cli command
+- queries
