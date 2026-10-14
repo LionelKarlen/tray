@@ -18,7 +18,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn read_simple_sleeping_node() {
+    fn read_simple_node() {
         let input = r#"sleeping until="2026-10-15""#;
         let actual = Sleeping::from_kdl(input).unwrap();
         let expected = Sleeping {
@@ -28,7 +28,7 @@ mod tests {
     }
 
     #[test]
-    fn read_empty_sleeping_node() {
+    fn read_empty_node() {
         let input = r#""#;
         let actual = Sleeping::from_kdl(input).unwrap_err();
         let expected_message = "empty document";

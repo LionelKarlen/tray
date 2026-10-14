@@ -1,0 +1,21 @@
+task "task header"
+
+task "task with body" {
+	body "I am elaborating"
+}
+
+task "tasks can be sleeping" {
+	sleeping until="2026-10-15"
+}
+
+task "specific date where this has to be completed" {
+	scheduled "2026-10-16"
+}
+
+task "task with a deadline" {
+	deadline "2026-10-16"
+}
+
+task "tasks can be waiting" {
+	waiting since="2026-10-05"
+}
