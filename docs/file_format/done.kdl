@@ -1,0 +1,21 @@
+done "done header" completed="2026-10-15"
+
+done "done with body" completed="2026-10-15" {
+	body "I am elaborating"
+}
+
+done "dones can be sleeping" completed="2026-10-15" {
+	sleeping until="2026-10-15"
+}
+
+done "specific date where this has to be completed" completed="2026-10-15" {
+	scheduled "2026-10-16"
+}
+
+done "done with a deadline" completed="2026-10-15" {
+	deadline "2026-10-16"
+}
+
+done "done can be waiting" completed="2026-10-15" {
+	waiting since="2026-10-05"
+}

@@ -36,6 +36,16 @@ next <header> {
 ```
 
 # Done
+Denotes any completed Task. It is almost the same as `Task`, but includes a `completed` property, as well as semantically denoting a different state. Requires a header describing the task. Can also contain a body, be sleeping, have a scheduled date, have a deadline, or be waiting.
+```
+done <header> <completed=DateTimeString> {
+  [sleeping <until=DateTimeString>]
+  [body <content>]
+  [scheduled <DateTimeString>]
+  [deadline <DateTimeString>]
+  [waiting <since=DateTimeString>]
+}
+```
 
 # Event
 
