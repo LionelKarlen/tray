@@ -29,7 +29,7 @@ mod tests {
 
     #[test]
     fn read_empty_node() {
-        let input = r#""#;
+        let input = r"";
         let actual = Deadline::from_kdl(input).unwrap_err();
         let expected_message = "empty document";
         assert_eq!(actual.to_string(), expected_message);
@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn read_missing_argument() {
-        let input = r#"deadline"#;
+        let input = r"deadline";
         let actual = Deadline::from_kdl(input).unwrap_err();
         let expected_message = "in Deadline: missing required argument at index 0";
         assert_eq!(actual.to_string(), expected_message);

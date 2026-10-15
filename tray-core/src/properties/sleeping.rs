@@ -29,7 +29,7 @@ mod tests {
 
     #[test]
     fn read_empty_node() {
-        let input = r#""#;
+        let input = r"";
         let actual = Sleeping::from_kdl(input).unwrap_err();
         let expected_message = "empty document";
         assert_eq!(actual.to_string(), expected_message);
@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn read_missing_until_property() {
-        let input = r#"sleeping"#;
+        let input = r"sleeping";
         let actual = Sleeping::from_kdl(input).unwrap_err();
         let expected_message = "in Sleeping: missing required field: until";
         assert_eq!(actual.to_string(), expected_message);

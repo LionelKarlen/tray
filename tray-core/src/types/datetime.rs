@@ -16,7 +16,7 @@ impl FromStr for TrayDateTime {
 
 impl<'de> FromKdlValue<'de> for TrayDateTime {
     fn from_kdl_value(value: &'de club_kdl::Value<'de>) -> club_kdl::Result<Self> {
-        let v = value.as_string().ok_or(Error::TypeMismatch {
+        let v = value.as_string().ok_or_else(|| Error::TypeMismatch {
             expected: "DateTime String",
             found: value.to_string(),
         })?;
@@ -52,6 +52,6 @@ mod tests {
         let actual = TrayDateTime::from_str(input).unwrap_err();
         let expected_message =
             "expected four digit year (or leading sign for six digit year), but found end of input";
-        assert_eq!(actual.to_string(), expected_message)
+        assert_eq!(actual.to_string(), expected_message);
     }
 }

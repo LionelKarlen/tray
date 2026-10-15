@@ -29,7 +29,7 @@ mod tests {
 
     #[test]
     fn read_empty_node() {
-        let input = r#""#;
+        let input = r"";
         let actual = Waiting::from_kdl(input).unwrap_err();
         let expected_message = "empty document";
         assert_eq!(actual.to_string(), expected_message);
@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn read_missing_since_property() {
-        let input = r#"waiting"#;
+        let input = r"waiting";
         let actual = Waiting::from_kdl(input).unwrap_err();
         let expected_message = "in Waiting: missing required field: since";
         assert_eq!(actual.to_string(), expected_message);
