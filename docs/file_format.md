@@ -24,6 +24,16 @@ task <header> {
 ```
 
 # Next
+Denotes any next task. It is exactly the same as `Task`, but semantically denotes a different state. Requires a header describing the task. Can also contain a body, be sleeping, have a scheduled date, have a deadline, or be waiting.
+```
+next <header> {
+  [sleeping <until=DateTimeString>]
+  [body <content>]
+  [scheduled <DateTimeString>]
+  [deadline <DateTimeString>]
+  [waiting <since=DateTimeString>]
+}
+```
 
 # Done
 

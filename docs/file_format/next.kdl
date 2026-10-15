@@ -1,0 +1,21 @@
+next "next header"
+
+next "next with body" {
+	body "I am elaborating"
+}
+
+next "nexts can be sleeping" {
+	sleeping until="2026-10-15"
+}
+
+next "specific date where this has to be completed" {
+	scheduled "2026-10-16"
+}
+
+next "next with a deadline" {
+	deadline "2026-10-16"
+}
+
+next "nexts can be waiting" {
+	waiting since="2026-10-05"
+}
