@@ -2,7 +2,10 @@ use club_kdl::KdlDeserialize;
 
 use crate::{
     bridge::FromKDL,
-    properties::{deadline::Deadline, scheduled::Scheduled, sleeping::Sleeping, waiting::Waiting},
+    properties::{
+        blocked::Blocked, deadline::Deadline, scheduled::Scheduled, sleeping::Sleeping,
+        waiting::Waiting,
+    },
 };
 
 #[derive(KdlDeserialize, Debug, Eq, PartialEq)]
@@ -10,6 +13,8 @@ use crate::{
 pub struct Task {
     #[kdl(argument)]
     pub header: String,
+    #[kdl(child(name = "blocked"))]
+    pub blocked: Option<Blocked>,
     #[kdl(child(name = "sleeping"))]
     pub sleeping: Option<Sleeping>,
     #[kdl(child(name = "body"), unwrap_arg)]
@@ -43,6 +48,7 @@ mod tests {
             schedulded: None,
             deadline: None,
             waiting: None,
+            blocked: None,
         };
         assert_eq!(actual, expected);
     }
@@ -62,6 +68,7 @@ mod tests {
             schedulded: None,
             deadline: None,
             waiting: None,
+            blocked: None,
         };
         assert_eq!(actual, expected);
     }
@@ -84,6 +91,7 @@ mod tests {
                 on: TrayDateTime::from_str("2026-10-16").unwrap(),
             }),
             waiting: None,
+            blocked: None,
         };
         assert_eq!(actual, expected);
     }
@@ -103,6 +111,27 @@ mod tests {
             deadline: None,
             waiting: Some(Waiting {
                 since: TrayDateTime::from_str("2026-10-05").unwrap(),
+            }),
+            blocked: None,
+        };
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_read_blocked_task() {
+        let input = r#"task "task header" {
+            blocked "good reason"
+        }"#;
+        let actual = Task::from_kdl(input).unwrap();
+        let expected = Task {
+            header: "task header".into(),
+            sleeping: None,
+            body: None,
+            schedulded: None,
+            deadline: None,
+            waiting: None,
+            blocked: Some(Blocked {
+                reason: "good reason".into(),
             }),
         };
         assert_eq!(actual, expected);
