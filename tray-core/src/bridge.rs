@@ -1,7 +1,13 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
 pub trait ToKDL {
-    fn to_kdl(&self) -> String;
+    fn to_kdl(&self) -> Result<String, club_kdl::Error>
+    where
+        Self: KdlSerialize,
+    {
+        let out = club_kdl::to_string_pretty(self)?;
+        Ok(out.trim().into())
+    }
 }
 
 pub trait FromKDL<'de> {

@@ -1,8 +1,11 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
-use crate::{bridge::FromKDL, properties::sleeping::Sleeping};
+use crate::{
+    bridge::{FromKDL, ToKDL},
+    properties::sleeping::Sleeping,
+};
 
-#[derive(KdlDeserialize, Debug, Eq, PartialEq)]
+#[derive(KdlDeserialize, Debug, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "capture")]
 pub struct Capture {
     #[kdl(argument)]
@@ -14,6 +17,7 @@ pub struct Capture {
 }
 
 impl FromKDL<'_> for Capture {}
+impl ToKDL for Capture {}
 
 #[cfg(test)]
 mod tests {
@@ -63,5 +67,37 @@ mod tests {
             body: Some("more ideas on the capture header".into()),
         };
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_write_simple_capture() {
+        let input = r#"capture "capture header""#;
+        let intermediary = club_kdl::from_str::<Capture>(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_sleeping_capture() {
+        let input = r#"
+capture "capture header" {
+    sleeping until="2026-10-14"
+}"#
+        .trim_start();
+        let intermediary = club_kdl::from_str::<Capture>(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_body_capture() {
+        let input = r#"
+capture "capture header" {
+    body "more ideas on the capture header"
+}"#
+        .trim_start();
+        let intermediary = club_kdl::from_str::<Capture>(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
     }
 }
