@@ -15,7 +15,7 @@ impl FromKDL<'_> for Document {
         for<'a> Self: KdlDeserialize<'a>,
     {
         if text.is_empty() {
-            Ok(Document::default())
+            Ok(Self::default())
         } else {
             club_kdl::from_str(text)
         }
@@ -32,7 +32,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_read_empty_document() {
+    fn read_empty_document() {
         let input = "";
         let actual = Document::from_kdl(input).unwrap();
         let expected = Document { nodes: vec![] };
@@ -40,7 +40,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_mixed_document() {
+    fn read_mixed_document() {
         let input = r#"task "I am a task"
         done "completed unrelated task" completed="2026-10-10"
         event "test event" on="2026-10-11"

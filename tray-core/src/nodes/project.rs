@@ -31,7 +31,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_read_empty_project() {
+    fn read_empty_project() {
         let input = r#"project "project name""#;
         let actual = Project::from_kdl(input).unwrap();
         let expected = Project {
@@ -42,7 +42,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_mixed_project() {
+    fn read_mixed_project() {
         let input = r#"project "project name" {
             done "done task" completed="2026-10-10"
             next "next task"
@@ -63,7 +63,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_nested_project() {
+    fn read_nested_project() {
         let input = r#"project "project name" {
             done "done task" completed="2026-10-10"
             next "next task"
@@ -108,13 +108,13 @@ mod tests {
     }
 
     #[test]
-    fn test_write_empty_project() {
+    fn write_empty_project() {
         let input = r#"project "project name""#;
         round_trip(input);
     }
 
     #[test]
-    fn test_write_mixed_project() {
+    fn write_mixed_project() {
         let input = r#"
 project "project name" {
     done "done task" completed="2026-10-10"
@@ -126,7 +126,7 @@ project "project name" {
     }
 
     #[test]
-    fn test_write_nested_project() {
+    fn write_nested_project() {
         let input = r#"
 project "project name" {
     done "done task" completed="2026-10-10"

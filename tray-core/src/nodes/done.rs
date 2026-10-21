@@ -37,7 +37,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_read_basic_done() {
+    fn read_basic_done() {
         let input = r#"done "task header" completed="2026-10-15""#;
         let actual = Done::from_kdl(input).unwrap();
         let expected = Done {
@@ -53,7 +53,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_sleeping_done() {
+    fn read_sleeping_done() {
         let input = r#"done "task header" completed="2026-10-15" {
             sleeping until="2026-10-15"
         }"#;
@@ -73,7 +73,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_scheduled_and_deadlined_done() {
+    fn read_scheduled_and_deadlined_done() {
         let input = r#"done "task header" completed="2026-10-15" {
             scheduled "2026-10-15"
             deadline "2026-10-16"
@@ -96,7 +96,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_waiting_done_with_body() {
+    fn read_waiting_done_with_body() {
         let input = r#"done "task header" completed="2026-10-15" {
             body "task body"
             waiting since="2026-10-05"
@@ -116,51 +116,47 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
-    #[test]
-    fn test_write_basic_task() {
-        let input = r#"done "task header" completed="2026-10-15""#;
+    fn round_trip(input: &str) {
         let intermediary = Done::from_kdl(input).unwrap();
         let actual = intermediary.to_kdl().unwrap();
         assert_eq!(actual, input);
     }
 
     #[test]
-    fn test_write_sleeping_task() {
+    fn write_basic_task() {
+        let input = r#"done "task header" completed="2026-10-15""#;
+        round_trip(input);
+    }
+
+    #[test]
+    fn write_sleeping_task() {
         let input = r#"
 done "task header" completed="2026-10-15" {
     sleeping until="2026-10-15"
 }"#
         .trim_start();
-        let intermediary = Done::from_kdl(input).unwrap();
-        let actual = intermediary.to_kdl().unwrap();
-        assert_eq!(actual, input);
+        round_trip(input);
     }
 
     #[test]
-    fn test_write_scheduled_and_deadlined_task() {
+    fn write_scheduled_and_deadlined_task() {
         let input = r#"
 done "task header" completed="2026-10-15" {
     scheduled "2026-10-15"
     deadline "2026-10-16"
 }"#
         .trim_start();
-        let intermediary = Done::from_kdl(input).unwrap();
-        let actual = intermediary.to_kdl().unwrap();
-
-        assert_eq!(actual, input);
+        round_trip(input);
     }
 
     #[test]
-    fn test_write_waiting_task_with_body() {
+    fn write_waiting_task_with_body() {
         let input = r#"
 done "task header" completed="2026-10-15" {
     body "task body"
     waiting since="2026-10-05"
 }"#
         .trim_start();
-        let intermediary = Done::from_kdl(input).unwrap();
-        let actual = intermediary.to_kdl().unwrap();
-
-        assert_eq!(actual, input);
+        round_trip(input);
     }
 }

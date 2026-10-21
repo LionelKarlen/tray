@@ -1,6 +1,10 @@
 use club_kdl::{KdlDeserialize, KdlSerialize};
 
 pub trait ToKDL {
+    /// Convert a Struct back into the KDL string representation. Also trims whitespace off the end.
+    ///
+    /// # Errors
+    /// Can fail if `KdlSerialise` is not correctly implemented for the target type. See `club_kdl::Error` for the reasons. This is just a wrapper function.
     fn to_kdl(&self) -> Result<String, club_kdl::Error>
     where
         Self: KdlSerialize,

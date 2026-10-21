@@ -30,7 +30,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_basic_event() {
+    fn read_basic_event() {
         let input = r#"event "event description" on="2026-10-15""#;
         let actual = Event::from_kdl(input).unwrap();
         let expected = Event {
@@ -44,7 +44,7 @@ mod tests {
     }
 
     #[test]
-    fn test_duration_event() {
+    fn read_duration_event() {
         let input = r#"event "event description" on="2026-10-15" {
             duration "3h"
         }"#;
@@ -60,7 +60,7 @@ mod tests {
     }
 
     #[test]
-    fn test_location_event() {
+    fn read_location_event() {
         let input = r#"event "event description" on="2026-10-15" {
             location "somewhere"
         }"#;
@@ -76,7 +76,7 @@ mod tests {
     }
 
     #[test]
-    fn test_malformed_event() {
+    fn read_malformed_event() {
         let input = r#"event "event description""#;
         let actual = Event::from_kdl(input).unwrap_err();
         let expected_message = "in Event: missing required field: on";
@@ -84,7 +84,7 @@ mod tests {
     }
 
     #[test]
-    fn test_malformed_duration() {
+    fn read_malformed_duration() {
         let input = r#"event "event description" on="2026-10-10" {
             duration
         }"#;
@@ -99,35 +99,35 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
-    #[test]
-    fn test_write_basic_event() {
-        let input = r#"event "event description" on="2026-10-15""#;
+    fn round_trip(input: &str) {
         let intermediary = Event::from_kdl(input).unwrap();
         let actual = intermediary.to_kdl().unwrap();
         assert_eq!(actual, input);
     }
 
     #[test]
-    fn test_write_duration_event() {
+    fn write_basic_event() {
+        let input = r#"event "event description" on="2026-10-15""#;
+        round_trip(input);
+    }
+
+    #[test]
+    fn write_duration_event() {
         let input = r#"
 event "event description" on="2026-10-15" {
     duration "3h"
 }"#
         .trim_start();
-        let intermediary = Event::from_kdl(input).unwrap();
-        let actual = intermediary.to_kdl().unwrap();
-        assert_eq!(actual, input);
+        round_trip(input);
     }
 
     #[test]
-    fn test_write_location_event() {
+    fn write_location_event() {
         let input = r#"
 event "event description" on="2026-10-15" {
     location somewhere
 }"#
         .trim_start();
-        let intermediary = Event::from_kdl(input).unwrap();
-        let actual = intermediary.to_kdl().unwrap();
-        assert_eq!(actual, input);
+        round_trip(input);
     }
 }

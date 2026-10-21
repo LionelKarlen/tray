@@ -40,7 +40,7 @@ impl Display for TrayDateTime {
     }
 }
 
-impl<'de> ToKdlValue for TrayDateTime {
+impl ToKdlValue for TrayDateTime {
     fn to_kdl_value(&self) -> club_kdl::Value<'_> {
         club_kdl::Value::String(self.to_string().into())
     }
@@ -77,27 +77,25 @@ mod tests {
         assert_eq!(actual.to_string(), expected_message);
     }
 
-    #[test]
-    fn write_basic_date() {
-        let input = "2026-10-14";
+    fn round_trip(input: &str) {
         let intermediary = TrayDateTime::from_str(input).unwrap();
         let actual = intermediary.to_string();
         assert_eq!(actual, input);
     }
 
     #[test]
+    fn write_basic_date() {
+        let input = "2026-10-14";
+        round_trip(input);
+    }
+
+    #[test]
     fn write_basic_date_and_time() {
         let input = "2026-10-14 14:00";
-        let intermediary = TrayDateTime::from_str(input).unwrap();
-        let actual = intermediary.to_string();
-        assert_eq!(actual, input);
+        round_trip(input);
         let input = "2026-10-14 08:02";
-        let intermediary = TrayDateTime::from_str(input).unwrap();
-        let actual = intermediary.to_string();
-        assert_eq!(actual, input);
+        round_trip(input);
         let input = "2026-10-05";
-        let intermediary = TrayDateTime::from_str(input).unwrap();
-        let actual = intermediary.to_string();
-        assert_eq!(actual, input)
+        round_trip(input);
     }
 }
