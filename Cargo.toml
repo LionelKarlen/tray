@@ -1,4 +1,4 @@
 [workspace]
 resolver = "3"
-members = ["tray-core"]
+members = ["tray-core", "tray-tools"]
 
