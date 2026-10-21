@@ -1,7 +1,7 @@
-use crate::bridge::FromKDL;
-use club_kdl::KdlDeserialize;
+use crate::bridge::{FromKDL, ToKDL};
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
-#[derive(Debug, KdlDeserialize, Eq, PartialEq)]
+#[derive(Debug, KdlDeserialize, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "blocked")]
 pub struct Blocked {
     #[kdl(argument)]
@@ -9,6 +9,7 @@ pub struct Blocked {
 }
 
 impl FromKDL<'_> for Blocked {}
+impl ToKDL for Blocked {}
 
 #[cfg(test)]
 mod tests {
@@ -39,5 +40,13 @@ mod tests {
         let actual = Blocked::from_kdl(input).unwrap_err();
         let expected_message = "in Blocked: missing required argument at index 0";
         assert_eq!(actual.to_string(), expected_message);
+    }
+
+    #[test]
+    fn write_simple_node() {
+        let input = r#"blocked "This is the reason""#;
+        let intermediary = Blocked::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
     }
 }

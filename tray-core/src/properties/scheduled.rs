@@ -1,7 +1,10 @@
-use crate::{bridge::FromKDL, types::datetime::TrayDateTime};
-use club_kdl::KdlDeserialize;
+use crate::{
+    bridge::{FromKDL, ToKDL},
+    types::datetime::TrayDateTime,
+};
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
-#[derive(Debug, KdlDeserialize, Eq, PartialEq)]
+#[derive(Debug, KdlDeserialize, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "scheduled")]
 pub struct Scheduled {
     #[kdl(argument)]
@@ -9,6 +12,7 @@ pub struct Scheduled {
 }
 
 impl FromKDL<'_> for Scheduled {}
+impl ToKDL for Scheduled {}
 
 #[cfg(test)]
 mod tests {
@@ -49,5 +53,13 @@ mod tests {
         let actual = Scheduled::from_kdl(input).unwrap_err();
         let expected_message = "in Scheduled: parse error: Failed to parse DateTime";
         assert_eq!(actual.to_string(), expected_message);
+    }
+
+    #[test]
+    fn write_simple_node() {
+        let input = r#"scheduled "2026-10-15""#;
+        let intermediary = Scheduled::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
     }
 }

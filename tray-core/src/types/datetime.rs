@@ -26,7 +26,13 @@ impl<'de> FromKdlValue<'de> for TrayDateTime {
 
 impl Display for TrayDateTime {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}-{}-{}", self.0.year(), self.0.month(), self.0.day())?;
+        write!(
+            f,
+            "{}-{:02}-{:02}",
+            self.0.year(),
+            self.0.month(),
+            self.0.day()
+        )?;
         if self.0.hour() != 0 || self.0.minute() != 0 {
             write!(f, " {:02}:{:02}", self.0.hour(), self.0.minute())?;
         }
@@ -86,6 +92,10 @@ mod tests {
         let actual = intermediary.to_string();
         assert_eq!(actual, input);
         let input = "2026-10-14 08:02";
+        let intermediary = TrayDateTime::from_str(input).unwrap();
+        let actual = intermediary.to_string();
+        assert_eq!(actual, input);
+        let input = "2026-10-05";
         let intermediary = TrayDateTime::from_str(input).unwrap();
         let actual = intermediary.to_string();
         assert_eq!(actual, input)
