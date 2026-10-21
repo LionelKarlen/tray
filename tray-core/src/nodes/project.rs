@@ -1,11 +1,11 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
 use crate::{
-    bridge::FromKDL,
+    bridge::{FromKDL, ToKDL},
     nodes::{done::Done, next::Next, task::Task},
 };
 
-#[derive(PartialEq, Eq, Debug, KdlDeserialize)]
+#[derive(PartialEq, Eq, Debug, KdlDeserialize, KdlSerialize)]
 pub enum ProjectChild {
     Project(Project),
     Task(Task),
@@ -13,7 +13,7 @@ pub enum ProjectChild {
     Next(Next),
 }
 
-#[derive(KdlDeserialize, Debug, Eq, PartialEq)]
+#[derive(KdlDeserialize, Debug, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "project")]
 pub struct Project {
     #[kdl(argument)]
@@ -23,6 +23,7 @@ pub struct Project {
 }
 
 impl FromKDL<'_> for Project {}
+impl ToKDL for Project {}
 
 #[cfg(test)]
 mod tests {
@@ -98,5 +99,46 @@ mod tests {
             ],
         };
         assert_eq!(actual, expected);
+    }
+
+    fn round_trip(input: &str) {
+        let intermediary = Project::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_empty_project() {
+        let input = r#"project "project name""#;
+        round_trip(input);
+    }
+
+    #[test]
+    fn test_write_mixed_project() {
+        let input = r#"
+project "project name" {
+    done "done task" completed="2026-10-10"
+    next "next task"
+    task "following task"
+}"#
+        .trim_start();
+        round_trip(input);
+    }
+
+    #[test]
+    fn test_write_nested_project() {
+        let input = r#"
+project "project name" {
+    done "done task" completed="2026-10-10"
+    next "next task"
+    task "following task"
+    project "important subproject" {
+        done "wander aimlessly" completed="2026-10-11"
+        next "look at a map"
+        task "meander aimlessly anyway"
+    }
+}"#
+        .trim_start();
+        round_trip(input);
     }
 }
