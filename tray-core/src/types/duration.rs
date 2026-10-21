@@ -1,6 +1,6 @@
-use std::str::FromStr;
+use std::{fmt::Display, str::FromStr};
 
-use club_kdl::{Error, FromKdlValue};
+use club_kdl::{Error, FromKdlValue, ToKdlValue};
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Duration(pub String);
@@ -19,5 +19,17 @@ impl<'de> FromKdlValue<'de> for Duration {
             found: value.to_string(),
         })?;
         Self::from_str(v).map_err(|_| Error::Parse("Failed to parse Duration".into()))
+    }
+}
+
+impl Display for Duration {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl ToKdlValue for Duration {
+    fn to_kdl_value(&self) -> club_kdl::Value<'_> {
+        club_kdl::Value::String(self.to_string().into())
     }
 }

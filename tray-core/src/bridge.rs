@@ -5,7 +5,7 @@ pub trait ToKDL {
     where
         Self: KdlSerialize,
     {
-        let out = club_kdl::to_string_pretty(self)?;
+        let out = club_kdl::to_string(self)?;
         Ok(out.trim().into())
     }
 }

@@ -1,11 +1,11 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
 use crate::{
-    bridge::FromKDL,
+    bridge::{FromKDL, ToKDL},
     types::{datetime::TrayDateTime, duration::Duration},
 };
 
-#[derive(KdlDeserialize, Debug, Eq, PartialEq)]
+#[derive(KdlDeserialize, Debug, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "event")]
 pub struct Event {
     #[kdl(argument)]
@@ -21,6 +21,7 @@ pub struct Event {
 }
 
 impl FromKDL<'_> for Event {}
+impl ToKDL for Event {}
 
 #[cfg(test)]
 mod tests {
@@ -96,5 +97,37 @@ mod tests {
             body: None,
         };
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_write_basic_event() {
+        let input = r#"event "event description" on="2026-10-15""#;
+        let intermediary = Event::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_duration_event() {
+        let input = r#"
+event "event description" on="2026-10-15" {
+    duration "3h"
+}"#
+        .trim_start();
+        let intermediary = Event::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_location_event() {
+        let input = r#"
+event "event description" on="2026-10-15" {
+    location somewhere
+}"#
+        .trim_start();
+        let intermediary = Event::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
     }
 }
