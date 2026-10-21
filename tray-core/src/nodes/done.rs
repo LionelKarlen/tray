@@ -1,12 +1,12 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
 use crate::{
-    bridge::FromKDL,
+    bridge::{FromKDL, ToKDL},
     properties::{deadline::Deadline, scheduled::Scheduled, sleeping::Sleeping, waiting::Waiting},
     types::datetime::TrayDateTime,
 };
 
-#[derive(KdlDeserialize, Debug, Eq, PartialEq)]
+#[derive(KdlDeserialize, Debug, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "done")]
 pub struct Done {
     #[kdl(argument)]
@@ -26,6 +26,7 @@ pub struct Done {
 }
 
 impl FromKDL<'_> for Done {}
+impl ToKDL for Done {}
 
 #[cfg(test)]
 mod tests {
@@ -113,5 +114,53 @@ mod tests {
             completed: TrayDateTime::from_str("2026-10-15").unwrap(),
         };
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_write_basic_task() {
+        let input = r#"done "task header" completed="2026-10-15""#;
+        let intermediary = Done::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_sleeping_task() {
+        let input = r#"
+done "task header" completed="2026-10-15" {
+    sleeping until="2026-10-15"
+}"#
+        .trim_start();
+        let intermediary = Done::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_scheduled_and_deadlined_task() {
+        let input = r#"
+done "task header" completed="2026-10-15" {
+    scheduled "2026-10-15"
+    deadline "2026-10-16"
+}"#
+        .trim_start();
+        let intermediary = Done::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_waiting_task_with_body() {
+        let input = r#"
+done "task header" completed="2026-10-15" {
+    body "task body"
+    waiting since="2026-10-05"
+}"#
+        .trim_start();
+        let intermediary = Done::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+
+        assert_eq!(actual, input);
     }
 }

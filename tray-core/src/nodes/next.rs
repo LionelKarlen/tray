@@ -1,14 +1,14 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
 use crate::{
-    bridge::FromKDL,
+    bridge::{FromKDL, ToKDL},
     properties::{
         blocked::Blocked, deadline::Deadline, scheduled::Scheduled, sleeping::Sleeping,
         waiting::Waiting,
     },
 };
 
-#[derive(KdlDeserialize, Debug, Eq, PartialEq)]
+#[derive(KdlDeserialize, Debug, Eq, PartialEq, KdlSerialize)]
 #[kdl(name = "next")]
 pub struct Next {
     #[kdl(argument)]
@@ -28,6 +28,7 @@ pub struct Next {
 }
 
 impl FromKDL<'_> for Next {}
+impl ToKDL for Next {}
 
 #[cfg(test)]
 mod tests {
@@ -135,5 +136,65 @@ mod tests {
             }),
         };
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_write_basic_task() {
+        let input = r#"next "task header""#;
+        let intermediary = Next::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_sleeping_task() {
+        let input = r#"
+next "task header" {
+    sleeping until="2026-10-15"
+}"#
+        .trim_start();
+        let intermediary = Next::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_scheduled_and_deadlined_task() {
+        let input = r#"
+next "task header" {
+    scheduled "2026-10-15"
+    deadline "2026-10-16"
+}"#
+        .trim_start();
+        let intermediary = Next::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_waiting_task_with_body() {
+        let input = r#"
+next "task header" {
+    body "task body"
+    waiting since="2026-10-05"
+}"#
+        .trim_start();
+        let intermediary = Next::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn test_write_blocked_task() {
+        let input = r#"
+next "task header" {
+    blocked "good reason"
+}"#
+        .trim_start();
+        let intermediary = Next::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
     }
 }
