@@ -1,8 +1,11 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
-use crate::{bridge::FromKDL, nodes::Node};
+use crate::{
+    bridge::{FromKDL, ToKDL},
+    nodes::Node,
+};
 
-#[derive(KdlDeserialize, Debug, Eq, PartialEq, Default)]
+#[derive(KdlDeserialize, Debug, Eq, PartialEq, Default, KdlSerialize)]
 #[kdl(document)]
 pub struct Document {
     #[kdl(children)]
@@ -21,6 +24,8 @@ impl FromKDL<'_> for Document {
         }
     }
 }
+
+impl ToKDL for Document {}
 
 #[cfg(test)]
 mod tests {
@@ -77,5 +82,27 @@ mod tests {
             ],
         };
         assert_eq!(actual, expected);
+    }
+
+    fn round_trip(input: &str) {
+        let intermediary = Document::from_kdl(input).unwrap();
+        let actual = intermediary.to_kdl().unwrap();
+        assert_eq!(actual, input);
+    }
+
+    #[test]
+    fn write_empty_document() {
+        let input = "";
+        round_trip(input);
+    }
+
+    #[test]
+    fn write_mixed_document() {
+        let input = r#"
+task "I am a task"
+done "completed unrelated task" completed="2026-10-10"
+event "test event" on="2026-10-11""#
+            .trim_start();
+        round_trip(input);
     }
 }

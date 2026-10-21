@@ -1,4 +1,4 @@
-use club_kdl::KdlDeserialize;
+use club_kdl::{KdlDeserialize, KdlSerialize};
 
 use crate::nodes::{
     capture::Capture, done::Done, event::Event, next::Next, project::Project, task::Task,
@@ -12,7 +12,7 @@ pub mod next;
 pub mod project;
 pub mod task;
 
-#[derive(PartialEq, Eq, Debug, KdlDeserialize)]
+#[derive(PartialEq, Eq, Debug, KdlDeserialize, KdlSerialize)]
 pub enum Node {
     Project(Project),
     Task(Task),
