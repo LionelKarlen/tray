@@ -1,27 +1,18 @@
 use clap::Parser;
-use clap::Subcommand;
+use miette::Result;
+use tray_tools::commands::{Command, Executable};
 
 /// Tray toolkit
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-struct Args {
+struct Cli {
     /// Command to execute
     #[command(subcommand)]
     command: Command,
 }
 
-#[derive(Subcommand, Debug)]
-#[command()]
-enum Command {
-    /// Format Tray kdl file
-    #[command(visible_alias = "fmt")]
-    Format,
-}
-
-fn main() {
-    let args = Args::parse();
-
-    match args.command {
-        Command::Format => todo!(),
-    }
+fn main() -> Result<()> {
+    let cli = Cli::parse();
+    cli.command.execute()?;
+    Ok(())
 }
