@@ -1,0 +1,7 @@
+event "event description" on="2026-10-15" {
+    location "someplace else"
+}
+
+event "long event coming up" on="2026-10-15" {
+    duration "3h"
+}

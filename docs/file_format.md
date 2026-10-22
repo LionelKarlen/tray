@@ -48,9 +48,22 @@ done <header> <completed=DateTimeString> {
 ```
 
 # Event
+Denotes an event. Requires a header describing the event, as well as a datetime string. Can also contain a body, a duration, and a location.
+```
+event <header> <on=DateTimeString> {
+  [duration <DateTimeString>]
+  [body <content>]
+  [location <content>]
+}
+```
 
 # Project
-
+Denotes a project. Requires a header describing the project. Can contain any set of `Task`, `Done`, `Next`, or other `Project`s. A project is considered completed if every entry is `Done`. A project is in warning state if there is no `Next` entry, either top level or in child `Project`s.
+```
+project <header> {
+  <children>
+}
+```
 
 
 # See Also:

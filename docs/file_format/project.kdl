@@ -1,0 +1,17 @@
+project "cool project" {
+	done "done task" completed="2026-10-10"
+	next "next task"
+}
+
+project "warning state project" {
+	task "I am a task" {
+		body "but there is no next action defined"
+	}
+}
+
+project "completed state project" {
+	done "done task" completed="2026-10-10"
+	project "do this first" {
+		done "already done" completed="2026-10-05"
+	}
+}
