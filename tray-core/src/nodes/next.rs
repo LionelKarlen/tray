@@ -3,8 +3,8 @@ use club_kdl::{KdlDeserialize, KdlSerialize};
 use crate::{
     bridge::{FromKDL, ToKDL},
     properties::{
-        blocked::Blocked, deadline::Deadline, scheduled::Scheduled, sleeping::Sleeping,
-        waiting::Waiting,
+        blocked::Blocked, clock::Clock, deadline::Deadline, scheduled::Scheduled,
+        sleeping::Sleeping, waiting::Waiting,
     },
 };
 
@@ -25,6 +25,8 @@ pub struct Next {
     pub deadline: Option<Deadline>,
     #[kdl(child(name = "waiting"))]
     pub waiting: Option<Waiting>,
+    #[kdl(child(name = "clock"))]
+    pub clock: Option<Clock>,
 }
 
 impl FromKDL<'_> for Next {}
@@ -50,6 +52,7 @@ mod tests {
             deadline: None,
             waiting: None,
             blocked: None,
+            clock: None,
         };
         assert_eq!(actual, expected);
     }
@@ -70,6 +73,7 @@ mod tests {
             deadline: None,
             waiting: None,
             blocked: None,
+            clock: None,
         };
         assert_eq!(actual, expected);
     }
@@ -93,6 +97,7 @@ mod tests {
             }),
             waiting: None,
             blocked: None,
+            clock: None,
         };
         assert_eq!(actual, expected);
     }
@@ -114,6 +119,7 @@ mod tests {
                 since: TrayDateTime::from_str("2026-10-05").unwrap(),
             }),
             blocked: None,
+            clock: None,
         };
         assert_eq!(actual, expected);
     }
@@ -134,6 +140,7 @@ mod tests {
             blocked: Some(Blocked {
                 reason: "good reason".into(),
             }),
+            clock: None,
         };
         assert_eq!(actual, expected);
     }

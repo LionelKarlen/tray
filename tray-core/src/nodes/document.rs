@@ -71,6 +71,7 @@ mod tests {
                     schedulded: None,
                     deadline: None,
                     waiting: None,
+                    clock: None,
                 }),
                 Node::Event(Event {
                     header: "test event".into(),
